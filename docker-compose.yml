@@ -4,7 +4,7 @@ services:
   web:
     build: .
     ports:
-      - "8082:8000"
+      - "8083:8000"
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/villagedb
     depends_on:
