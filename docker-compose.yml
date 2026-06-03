@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8082:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/villagedb
+    depends_on:
+      - db
+    volumes:
+      - certificate_storage:/app/certificates
+    # This allows Docker to replicate instances if you use Docker Swarm
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: villagedb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
+  certificate_storage:

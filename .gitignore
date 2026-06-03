@@ -1,0 +1,4 @@
+# Ignore all JPGs in the static folder
+static/*.jpg
+# Ignore all generated resident certificates for privacy
+certificates/
