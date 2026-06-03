@@ -18,7 +18,7 @@ class CertificateRequest(BaseModel):
     payment_token: str
 
 # ◄--- CHANGED: Now serves the HTML interface instead of JSON text
-@app.get("/", response_class=HTMLTemplateResponse)
+@app.get("/", response_class=HTMLResponse)
 def home():
     with open("templates/index.html", "r") as f:
         return f.read()
