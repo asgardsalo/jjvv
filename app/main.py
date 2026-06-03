@@ -57,4 +57,4 @@ async def generate_certificate(request: CertificateRequest):
     file_path = f"certificates/{request.resident_id}_cert.pdf"
     pdf.output(file_path)
     
-    return {"status": "Success", "download_url": f"/download/{request.resident_id}_cert.pdf"}
+    return {"status": "Success", "download_url": f"/Downloads/{request.resident_id}_cert.pdf"}
