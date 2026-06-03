@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Village Community Board</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <nav class="bg-emerald-700 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">🏡 Our Village Community</h1>
+            <span class="bg-emerald-800 px-3 py-1 rounded text-sm">Resident Portal</span>
+        </div>
+    </nav>
+
+    <div class="container mx-auto my-8 p-6 bg-white rounded-lg shadow-sm border border-gray-100">
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome to the Village Board</h2>
+        <p class="text-gray-600">Find directions, view community photos, or securely request an official address certificate.</p>
+    </div>
+
+    <div class="container mx-auto grid md:grid-cols-3 gap-6 my-6">
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <h3 class="text-xl font-semibold mb-3 text-emerald-700">📸 Village Gallery</h3>
+            <div class="grid grid-cols-2 gap-2">
+                <img src="/static/village_square.jpg" onerror="this.src='https://picsum.photos/200/150'" class="rounded object-cover w-full h-28">
+                <img src="/static/church.jpg" onerror="this.src='https://picsum.photos/201/150'" class="rounded object-cover w-full h-28">
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <h3 class="text-xl font-semibold mb-3 text-emerald-700">📍 Directions Map</h3>
+            <div class="bg-gray-200 w-full h-28 rounded flex items-center justify-center text-gray-500 text-sm">
+                [ Interactive Map Placeholder ]
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col justify-between">
+            <div>
+                <h3 class="text-xl font-semibold mb-2 text-emerald-700">📜 Address Certificate</h3>
+                <p class="text-sm text-gray-600 mb-4">Get an official digital certificate with the village stamp. Secure payment integrated.</p>
+            </div>
+            <button onclick="requestCertificate()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-4 rounded transition cursor-pointer">
+                Pay & Request Certificate
+            </button>
+        </div>
+    </div>
+
+    <script>
+        async function requestCertificate() {
+            const button = event.target;
+            button.innerText = "Processing Payment...";
+            button.disabled = true;
+
+            try {
+                const response = await fetch('/request-certificate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        resident_id: "resident_01",
+                        payment_token: "tok_mock_123"
+                    })
+                });
+                const data = await response.json();
+                
+                if (data.status === "Success") {
+                    alert("Payment Successful! Your certificate has been generated.");
+                    window.location.href = data.download_url;
+                } else {
+                    alert("Error: " + data.detail);
+                }
+            } catch (error) {
+                alert("Failed to contact the village server.");
+            } finally {
+                button.innerText = "Pay & Request Certificate";
+                button.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
