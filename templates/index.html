@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Village Community Board</title>
+    <title>Villa Karina</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
 
     <nav class="bg-emerald-700 text-white p-4 shadow-md">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold">🏡 Our Village Community</h1>
+            <h1 class="text-xl font-bold">🏡 Nuestra Comunidad</h1>
             <span class="bg-emerald-800 px-3 py-1 rounded text-sm">Resident Portal</span>
         </div>
     </nav>
 
     <div class="container mx-auto my-8 p-6 bg-white rounded-lg shadow-sm border border-gray-100">
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome to the Village Board</h2>
-        <p class="text-gray-600">Find directions, view community photos, or securely request an official address certificate.</p>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">Bienvenido a Villa Karina</h2>
+        <p class="text-gray-600">Encuentra dicrecciones, ver fotos de la comunidad, o solicitar un certificado de domicilio oficial.</p>
     </div>
 
     <div class="container mx-auto grid md:grid-cols-3 gap-6 my-6">
@@ -38,11 +38,11 @@
 
         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col justify-between">
             <div>
-                <h3 class="text-xl font-semibold mb-2 text-emerald-700">📜 Address Certificate</h3>
-                <p class="text-sm text-gray-600 mb-4">Get an official digital certificate with the village stamp. Secure payment integrated.</p>
+                <h3 class="text-xl font-semibold mb-2 text-emerald-700">📜 Certificado de Domicilio</h3>
+                <p class="text-sm text-gray-600 mb-4">Obtén un certificado digital oficial con el sello de la villa. Pago seguro integrado.</p>
             </div>
             <button onclick="requestCertificate()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-4 rounded transition cursor-pointer">
-                Pay & Request Certificate
+                Pagar y Solicitar Certificado
             </button>
         </div>
     </div>
@@ -50,7 +50,7 @@
     <script>
         async function requestCertificate() {
             const button = event.target;
-            button.innerText = "Processing Payment...";
+            button.innerText = "Procesando Pago...";
             button.disabled = true;
 
             try {
@@ -65,15 +65,15 @@
                 const data = await response.json();
                 
                 if (data.status === "Success") {
-                    alert("Payment Successful! Your certificate has been generated.");
+                    alert("Pago Exitoso! Se generó el certificado.");
                     window.location.href = data.download_url;
                 } else {
                     alert("Error: " + data.detail);
                 }
             } catch (error) {
-                alert("Failed to contact the village server.");
+                alert("Fallo al contactar el servidor de la villa.");
             } finally {
-                button.innerText = "Pay & Request Certificate";
+                button.innerText = "Pagar y Solicitar Certificado";
                 button.disabled = false;
             }
         }

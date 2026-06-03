@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import fpdf
 
-app = FastAPI(title="Village Community Board")
+app = FastAPI(title="Villa Karina")
 
 # Mount folders so the browser can access files inside them
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -30,18 +30,18 @@ def get_photos():
 @app.post("/request-certificate")
 async def generate_certificate(request: CertificateRequest):
     if request.resident_id not in RESIDENTS:
-        raise HTTPException(status_code=404, detail="Resident not found")
+        raise HTTPException(status_code=404, detail="Residente no registrado")
     
     resident = RESIDENTS[request.resident_id]
     pdf = fpdf.FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=15)
-    pdf.cell(200, 10, txt="OFFICIAL VILLAGE ADDRESS CERTIFICATE", ln=1, align='C')
+    pdf.cell(200, 10, txt="Certificado Oficial de Domicilio", ln=1, align='C')
     pdf.ln(10)
     pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, f"This is to certify that {resident['name']} resides at {resident['address']}.")
+    pdf.multi_cell(0, 10, f"Este Documento Certifica que {resident['name']} habita en {resident['address']}.")
     pdf.ln(20)
-    pdf.cell(200, 10, txt="[ OFFICIAL VILLAGE STAMP ]", ln=1, align='R')
+    pdf.cell(200, 10, txt="[ Certificado Villa Karina ]", ln=1, align='R')
     
     os.makedirs("certificates", exist_ok=True)
     file_path = f"certificates/{request.resident_id}_cert.pdf"
