@@ -1,56 +1,61 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Villa Karina</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 col-span-1 md:col-span-3">
+            <h3 class="text-xl font-semibold mb-4 text-emerald-700">📜 Resident Services</h3>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                    <h4 class="font-semibold mb-2">1. New Resident Registration</h4>
+                    <p class="text-sm text-gray-600 mb-3">Not in the system? Add your details below.</p>
+                    <input type="text" id="regId" placeholder="Create an ID (e.g., jsmith)" class="w-full mb-2 p-2 border rounded">
+                    <input type="text" id="regName" placeholder="Full Legal Name" class="w-full mb-2 p-2 border rounded">
+                    <input type="text" id="regAddress" placeholder="Full Home Address" class="w-full mb-3 p-2 border rounded">
+                    <button onclick="registerUser()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition">
+                        Register
+                    </button>
+                </div>
 
-    <nav class="bg-emerald-700 text-white p-4 shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold">🏡 Nuestra Comunidad</h1>
-            <span class="bg-emerald-800 px-3 py-1 rounded text-sm">Resident Portal</span>
-        </div>
-    </nav>
-
-    <div class="container mx-auto my-8 p-6 bg-white rounded-lg shadow-sm border border-gray-100">
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">Bienvenido a Villa Karina</h2>
-        <p class="text-gray-600">Encuentra dicrecciones, ver fotos de la comunidad, o solicitar un certificado de domicilio oficial.</p>
-    </div>
-
-    <div class="container mx-auto grid md:grid-cols-3 gap-6 my-6">
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-            <h3 class="text-xl font-semibold mb-3 text-emerald-700">📸 Village Gallery</h3>
-            <div class="grid grid-cols-2 gap-2">
-                <img src="/static/village_square.jpg" onerror="this.src='https://picsum.photos/200/150'" class="rounded object-cover w-full h-28">
-                <img src="/static/church.jpg" onerror="this.src='https://picsum.photos/201/150'" class="rounded object-cover w-full h-28">
+                <div class="bg-emerald-50 p-4 rounded border border-emerald-200">
+                    <h4 class="font-semibold mb-2">2. Get Official Certificate</h4>
+                    <p class="text-sm text-gray-600 mb-3">Already registered? Enter your ID to pay and generate your stamped certificate.</p>
+                    <input type="text" id="certId" placeholder="Your Resident ID" class="w-full mb-4 p-2 border rounded">
+                    <button onclick="requestCertificate()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded transition">
+                        Pay & Download Certificate
+                    </button>
+                </div>
             </div>
-        </div>
-
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-            <h3 class="text-xl font-semibold mb-3 text-emerald-700">📍 Directions Map</h3>
-            <div class="bg-gray-200 w-full h-28 rounded flex items-center justify-center text-gray-500 text-sm">
-                [ Interactive Map Placeholder ]
-            </div>
-        </div>
-
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col justify-between">
-            <div>
-                <h3 class="text-xl font-semibold mb-2 text-emerald-700">📜 Certificado de Domicilio</h3>
-                <p class="text-sm text-gray-600 mb-4">Obtén un certificado digital oficial con el sello de la villa. Pago seguro integrado.</p>
-            </div>
-            <button onclick="requestCertificate()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-4 rounded transition cursor-pointer">
-                Pagar y Solicitar Certificado
-            </button>
         </div>
     </div>
 
     <script>
+        async function registerUser() {
+            const data = {
+                resident_id: document.getElementById('regId').value,
+                name: document.getElementById('regName').value,
+                address: document.getElementById('regAddress').value
+            };
+
+            if(!data.resident_id || !data.name || !data.address) return alert("Please fill all fields");
+
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            
+            if (response.ok) {
+                alert(result.message);
+                document.getElementById('certId').value = data.resident_id; // Auto-fill next step
+            } else {
+                alert("Error: " + result.detail);
+            }
+        }
+
         async function requestCertificate() {
+            const resId = document.getElementById('certId').value;
+            if(!resId) return alert("Please enter your Resident ID");
+
             const button = event.target;
-            button.innerText = "Procesando Pago...";
+            button.innerText = "Processing Payment...";
             button.disabled = true;
 
             try {
@@ -58,22 +63,22 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        resident_id: "resident_01",
-                        payment_token: "tok_mock_123"
+                        resident_id: resId,
+                        payment_token: "tok_mock_123" // Mock payment token
                     })
                 });
                 const data = await response.json();
                 
-                if (data.status === "Success") {
-                    alert("Pago Exitoso! Se generó el certificado.");
+                if (response.ok) {
+                    alert("Payment Successful! Downloading certificate.");
                     window.location.href = data.download_url;
                 } else {
                     alert("Error: " + data.detail);
                 }
             } catch (error) {
-                alert("Fallo al contactar el servidor de la villa.");
+                alert("Failed to contact the server.");
             } finally {
-                button.innerText = "Pagar y Solicitar Certificado";
+                button.innerText = "Pay & Download Certificate";
                 button.disabled = false;
             }
         }
